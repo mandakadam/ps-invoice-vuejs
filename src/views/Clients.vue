@@ -17,9 +17,9 @@
 
                         <button class="btn btn-outline-secondary btn-sm ml-3"  @click="modifyClient(item)"><b-icon-pencil  /> Modify</button>
 
-                        <a class="btn btn-outline-success btn-sm ml-3" :href="`/invoice_list/${item.client_id}?name=${item.name}`"><b-icon-filter-left /> View Invoices</a>
+                        <router-link class="btn btn-outline-success btn-sm ml-3" :to="`/invoice_list/${item.client_id}?name=${item.name}`"><b-icon-filter-left /> View Invoices</router-link>
 
-                        <a class="btn btn-primary btn-sm ml-3" :href="`/generate_invoice/${item.client_id}`"><b-icon-bookmark-plus /> Generate Invoice</a>
+                        <router-link class="btn btn-primary btn-sm ml-3" :to="`/generate_invoice/${item.client_id}`"><b-icon-bookmark-plus /> Generate Invoice</router-link>
                             
                         </div>
                 </div>
@@ -42,7 +42,6 @@
         title="Submit Your Name"
         v-model="modalShow"
         >
-                        {{form}}
 
         <form ref="form" @submit.stop.prevent="handleSubmit">
             <button id="form_submit" type="submit" class="btn btn-default" style="position: absolute;"></button>
@@ -102,8 +101,14 @@ export default {
     },
     watch:{
         "form.name"(newval){
-            if(this.scope=="create")
+            if(this.scope=="create" && newval)
             this.form.client_id = newval.toLowerCase().replace(/[^A-Z0-9]/ig, "_")
+        },
+        modalShow(newval){
+            if(newval == false){
+                this.scope = "create"
+                this.form = {}
+            }
         }
     },
     computed: {
@@ -115,10 +120,16 @@ export default {
     },
     methods:{
         fetchData(){
-             this.$http.post('/api/clients/read', {}, {headers:{"auth-token": sessionStorage.getItem('sessionid')}})
+             this.$store.commit("loading", true);
+
+             this.$http.post('/api/clients/read')
             .then((res) => {
                 this.dataSource = res.data
+                this.$store.commit("loading", false);
             })
+             .catch((error) => {
+                this.showError(error);
+            });
         },
         handleOk(e) {
             e.preventDefault()
@@ -136,25 +147,16 @@ export default {
              this.$bvModal.msgBoxConfirm('Are you sure?')
             .then(value => {
                 if(value){
+                    this.$store.commit("loading", true);
+
                     this.$http
-                    .delete(`/api/clients/delete/${id}`,
-                        {
-                        headers: { "auth-token": sessionStorage.getItem("sessionid") },
-                        })
+                    .delete(`/api/clients/delete/${id}`)
                         .then((res) => {
-                            this.$bvToast.toast(res.data.msg, {
-                                title: "Success",
-                                variant: "success",
-                                solid: true
-                            })
+                           this.showSuccess(res);
                             return this.fetchData();
                         })
                         .catch((error) => {
-                            this.$bvToast.toast(error.response.data.msg, {
-                                title: "Error",
-                            variant: "danger",
-                            solid: true
-                        })
+                            this.showError(error)
                     }); 
                 }
             })
@@ -163,23 +165,19 @@ export default {
             })
         },
         createClient(){
-             this.$http.post('/api/clients/create', this.form, {headers:{"auth-token": sessionStorage.getItem('sessionid')}})
+            this.$store.commit("loading", true);
+
+             this.$http.post('/api/clients/create', this.form)
             .then((res) => {
-                this.$bvToast.toast(res.data.msg, {
-                    title: "Success",
-                    variant: "success",
-                    solid: true
-                });
-                this.modalShow = false
+                this.showSuccess(res);
+
+                this.modalShow = false;
+                this.form = {}
                 this.fetchData();
             })
             .catch((error) => {
-                    this.$bvToast.toast(error.response.data.msg, {
-                        title: "Error",
-                        variant: "danger",
-                        solid: true
-                    })
-                });
+                this.showError(error)
+            });
         },
         modifyClient(item){
             this.scope = "modify"
@@ -187,28 +185,17 @@ export default {
             this.modalShow = true
         },
         updateClient(){
+            this.$store.commit("loading", true);
             this.$http
-            .put(`/api/clients/update/${this.form.client_id}`, 
-            this.form,
-            {
-            headers: { "auth-token": sessionStorage.getItem("sessionid") },
-            })
+            .put(`/api/clients/update/${this.form.client_id}`, this.form)
             .then((res) => {
-                this.$bvToast.toast(res.data.msg, {
-                    title: "Success",
-                    variant: "success",
-                    solid: true
-                })
+                this.showSuccess(res);
                 this.modalShow = false
                 this.fetchData();
 
             })
             .catch((error) => {
-                this.$bvToast.toast(error.response.data.msg, {
-                    title: "Error",
-                    variant: "danger",
-                    solid: true
-                })
+                this.showError(error)
             });
         },
     }

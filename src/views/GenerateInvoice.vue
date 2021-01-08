@@ -4,8 +4,7 @@
     <div class="d-flex justify-content-between ">
         <h3>Invoice</h3>
         <div>
-          <button v-if="$route.params.invoice_ref" class="btn btn-outline-secondary btn-sm" @click="$router.go(-2)"><b-icon-arrow-left /> Back</button>
-          <button v-else class="btn btn-outline-secondary btn-sm" @click="$router.go(-2)"><b-icon-arrow-left /> Back</button>
+          <button class="btn btn-outline-secondary btn-sm" @click="$router.go(-1)"><b-icon-arrow-left /> Back</button>
         </div>
     </div>
     </div>
@@ -171,14 +170,10 @@
       </tr>
     </table>
   
-    <div v-if="scope=='create'">
-        <button type="submit" class="button no-print">Create Invoice</button>
-        <button class="button no-print" @click="$router.go(-1)">Close</button>
-    </div>
-    <div v-else>
-      <button class="button no-print" @click="printInvoice">Print Invoice</button>
-      <button type="submit" class="button no-print" >Update Invoice</button>
-      <button class="button no-print" @click="$router.go(-2)">Close</button>
+    <div class=" no-print">
+        <button v-if="scope=='create'" type="submit" class="btn btn-primary mr-3">Create Invoice</button>
+        <button v-else class="btn btn-primary mr-3" @click="printInvoice">Print Invoice</button>
+        <router-link class="btn btn-outline-danger  mr-3" to="/clients">Close</router-link>
     </div>
   </div>
   </form>
@@ -241,19 +236,6 @@ export default {
     }
   },
   methods: {
-    /*getInvoiceNumber() {
-      this.$http
-        .post(`/api/client_details/read`,
-        {
-            "filters": {"client_id": this.$route.params.id}
-        }, 
-        {
-          headers: { "auth-token": sessionStorage.getItem("sessionid") },
-        })
-        .then((res) => {
-            this.dataSource.invoice_ref = res.data.length + 1;
-        });
-    },*/
     handleSubmit(event) {
       event.preventDefault();
       if(this.scope == "create"){
@@ -267,49 +249,48 @@ export default {
       const today = new Date();
       this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
+      this.$store.commit("loading", true);
 
       this.$http
-        .post(`/api/clients/read/${this.$route.params.id}`, {}, {
-          headers: { "auth-token": sessionStorage.getItem("sessionid") },
-        })
+        .post(`/api/clients/read/${this.$route.params.id}`)
         .then((res) => {
+          this.$store.commit("loading", false);
           this.dataSource = {...this.dataSource, ...res.data};
+        })
+        .catch((error) => {
+            this.showError(error);
         });
     },
     modifyRead() {
+      this.$store.commit("loading", true);
+
       this.$http
-        .post(`/api/client_details/read/${this.$route.params.invoice_ref}`, {},
-        {
-          headers: { "auth-token": sessionStorage.getItem("sessionid") },
-        })
+        .post(`/api/client_details/read/${this.$route.params.invoice_ref}`)
         .then((res) => {
-          this.dataSource = res.data;
+            this.showSuccess("Invoice data loaded successfully");
+            this.dataSource = res.data;
+        })
+        .catch((error) => {
+            this.showError(error);
         });
     },
     createInvoice(){
-      console.log(this.dataSource)
         for(var i in this.dataSource){
             delete this.dataSource['_id']
             delete this.dataSource['__v']
         }
-            
+        
+        this.$store.commit("loading", true);
         this.$http
-        .post(`/api/client_details/create`, 
-        this.dataSource,
-        {
-          headers: { "auth-token": sessionStorage.getItem("sessionid") },
-        })
+        .post(`/api/client_details/create`, this.dataSource)
         .then((res) => {
-            this.$bvToast.toast(res.data.msg, {
-                title: "Success",
-                variant: "success",
-                solid: true
-            })
+            this.showSuccess(res);
+
             this.scope = "modify"
             this.$bvModal.msgBoxOk('Action completed')
               .then(value => {
                 if(value){
-                    this.$router.push(`/generate_invoice/${this.$route.params.id}/${this.dataSource.invoice_ref}`);
+                    this.$router.push({path:`/generate_invoice/${this.$route.params.id}/${this.dataSource.invoice_ref}`});
                 }
               })
               .catch(err => {
@@ -318,34 +299,19 @@ export default {
 
         })
         .catch((error) => {
-          console.log(error.response)
-            this.$bvToast.toast(error.response.data.msg, {
-                title: "Error",
-                variant: "danger",
-                solid: true
-            })
+            this.showError(error)
         });
     },
     updateInvoice(){
+        this.$store.commit("loading", true);
+
         this.$http
-        .put(`/api/client_details/update/${this.$route.params.invoice_ref}`, 
-        this.dataSource,
-        {
-          headers: { "auth-token": sessionStorage.getItem("sessionid") },
-        })
+        .put(`/api/client_details/update/${this.$route.params.invoice_ref}`, this.dataSource)
         .then((res) => {
-           this.$bvToast.toast(res.data.msg, {
-                title: "Success",
-                variant: "success",
-                solid: true
-            });
+           this.showSuccess(res);
         })
         .catch((error) => {
-            this.$bvToast.toast(error.response.data.msg, {
-                title: "Error",
-                variant: "danger",
-                solid: true
-            })
+           this.showError(error)
         });
     },
     addRow() {

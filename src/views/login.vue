@@ -51,39 +51,20 @@ export default {
     async onSubmit(event) {
       event.preventDefault();
       const self = this;
-  
+      this.$store.commit("loading", true);
+
       this.$http.post('api/user/login', this.form)
       .then((res) => {
             if(res && res.data.status == "success" && res.data.token){
               sessionStorage.setItem("sessionid", res.data.token);
               this.$emit("authenticated", true);
-              this.$bvToast.toast("Logged in successfully", {
-                  title: "Success",
-                  variant: "success",
-                  solid: true
-              })
-              setTimeout(function(){
-                self.$router.replace({ name: "clients"});
-              },1000)
+
+              this.showSuccess("Logged in successfully");
+              self.$router.replace({ name: "clients"});
             }
         }).catch((error) => {
-          console.log(error.response.data)
-           this.$bvToast.toast(error.response.data.msg, {
-              title: "Error",
-              variant: "danger",
-              solid: true
-          })
-
+          this.showError(error);
       });
-      
-
-      // if(user && user.data.status == "success" && user.data.token){
-      //     sessionStorage.setItem("sessionid", user.data.token);
-      //     this.$emit("authenticated", true);
-      //     this.$router.replace({ name: "about"});
-      // }else {
-      //     console.log("The username and / or password is incorrect");
-      // }
     },
     onReset(event) {
       event.preventDefault();
