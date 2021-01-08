@@ -1,23 +1,23 @@
 <template>
     <section class="container">
-            <div class="d-flex justify-content-between mb-3">
-                    <div class="d-flex align-items-center">
-                        <h3 class="mr-3">{{ $route.params.id ? $route.query.name : 'Invoice'}}</h3>
-                        <input type="text" class="form-control" v-model="search" placeholder="Search Client" />
-                        <div class="btn btn-default"><b-icon-search /></div>
+            <div class="d-flex justify-content-between mb-3 flex-column flex-lg-row">
+                    <div class="d-flex flex-column flex-lg-row">
+                        <h3 class="mr-3 text-capitalize" style="white-space: nowrap;">{{ $route.params.id ? $route.query.name : 'Invoice'}}</h3>
+                        
+                        <div class="d-flex mb-2 mb-lg-0">
+                            <input type="text" class="form-control" v-model="search" placeholder="Search Client" />
+                            <div class="btn btn-default"><b-icon-search /></div>
+                        </div>
                     </div>
-                    <div>
-                    <button class="btn btn-outline-secondary btn-sm mr-3" @click="$router.go(-1)"><b-icon-arrow-left /> Back</button>
-                    <router-link class="btn btn-success btn-sm" replace :to="`/generate_invoice/${$route.params.id}`">
-                    <b-icon-bookmark-plus />  Generate Invoice
-                    </router-link>
-                    </div>
-                </div>
+                    <div class="d-none d-lg-inline-block">
+                    <button class="btn btn-outline-secondary btn-sm" @click="$router.go(-1)"><b-icon-arrow-left /> Back</button>
+                 </div>
+            </div>
                 
 
             <b-list-group  v-if="filteredList.length">
-                <b-list-group-item class="d-flex justify-content-between" v-for="(item, index) in filteredList" :key="index">
-                    <b>{{ $route.params.id ?  'Invoice No.' : item.name}} #{{item.invoice_no}}</b>
+                <b-list-group-item class="d-flex justify-content-between flex-column flex-lg-row" v-for="(item, index) in filteredList" :key="index">
+                    <b class="mb-2 mb-lg-0">{{ $route.params.id ?  'Invoice No.' : item.name}} #{{item.invoice_no}}</b>
                     <div>
                         <b-btn variant="outline-danger" size="sm" @click="deleteInvoice(item.invoice_ref)">
                             <b-icon-trash />
@@ -49,7 +49,8 @@ export default {
     computed: {
        filteredList() {
             return this.dataSource.filter(a => {
-                return a.name.toLowerCase().includes(this.search.toLowerCase())
+                console.log(a)
+                return a.invoice_no.toString().toLowerCase().includes(this.search.toLowerCase())
             })
         }
     },

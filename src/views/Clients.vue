@@ -1,7 +1,7 @@
 <template>
     <section class="container">
-        <div class="d-flex justify-content-between mb-3">
-            <div class="d-flex align-items-center">
+        <div class="d-flex justify-content-between mb-3 flex-column flex-lg-row">
+            <div class="d-flex align-items-center mb-2 mb-lg-0">
                 <input type="text" class="form-control" v-model="search" placeholder="Search Client" />
                 <div class="btn btn-default"><b-icon-search /></div>
             </div>
@@ -9,17 +9,17 @@
         </div>
         <b-list-group class="accordion" role="tablist" v-if="filteredList.length">
             <b-list-group-item v-for="(item, index) in filteredList" :key="index">
-                <div  class="d-flex justify-content-between align-items-center">
-                        <div  v-b-toggle="`accordion-${index}`">{{index+1}}. <b>{{item.name}}</b></div>
+                <div  class="d-flex justify-content-between flex-column flex-lg-row">
+                        <div class="mb-2 mb-lg-0"  v-b-toggle="`accordion-${index}`">{{index+1}}. <b>{{item.name}}</b></div>
                         <div>
 
-                        <button class="btn btn-outline-danger btn-sm" @click="deleteClient(item.client_id)"><b-icon-trash /> Delete</button>
+                            <button class="btn btn-outline-danger btn-sm" @click="deleteClient(item.client_id)"><b-icon-trash /> <span class="d-none d-lg-inline-block">Delete</span></button>
 
-                        <button class="btn btn-outline-secondary btn-sm ml-3"  @click="modifyClient(item)"><b-icon-pencil  /> Modify</button>
+                            <button class="btn btn-outline-secondary btn-sm ml-3"  @click="modifyClient(item)"><b-icon-pencil  /> <span class="d-none d-lg-inline-block">Modify</span></button>
 
-                        <router-link class="btn btn-outline-success btn-sm ml-3" :to="`/invoice_list/${item.client_id}?name=${item.name}`"><b-icon-filter-left /> View Invoices</router-link>
+                            <router-link class="btn btn-outline-success btn-sm ml-3" :to="`/invoice_list/${item.client_id}?name=${item.name}`"><b-icon-filter-left /> <span class="d-none d-lg-inline-block">View Invoices</span></router-link>
 
-                        <router-link class="btn btn-primary btn-sm ml-3" :to="`/generate_invoice/${item.client_id}`"><b-icon-bookmark-plus /> Generate Invoice</router-link>
+                            <router-link class="btn btn-primary btn-sm ml-3" :to="`/generate_invoice/${item.client_id}`"><b-icon-bookmark-plus /> <span class="d-none d-lg-inline-block">Generate Invoice</span></router-link>
                             
                         </div>
                 </div>

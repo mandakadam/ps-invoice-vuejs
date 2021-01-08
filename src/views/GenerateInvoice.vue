@@ -34,7 +34,7 @@
           <table class="tbl" width="100%">
             <tr>
               <td width="40%" class="meta-head">Invoice #</td>
-              <td><input required class="input" type="number" name="" v-model="dataSource.invoice_no" /></td>
+              <td><input :disabled="scope=='modify'" required class="input" type="number" name="" v-model="dataSource.invoice_no" /></td>
             </tr>
             <tr>
               <td class="meta-head">Date</td>
@@ -170,9 +170,12 @@
       </tr>
     </table>
   
-    <div class=" no-print">
+    <div class="d-flex no-print">
         <button v-if="scope=='create'" type="submit" class="btn btn-primary mr-3">Create Invoice</button>
-        <button v-else class="btn btn-primary mr-3" @click="printInvoice">Print Invoice</button>
+        <div v-else>
+        <button type="submit" class="btn btn-success mr-3">Update Invoice</button>
+        <button class="btn btn-primary mr-3" @click="printInvoice">Print Invoice</button>
+        </div>
         <router-link class="btn btn-outline-danger  mr-3" to="/clients">Close</router-link>
     </div>
   </div>
@@ -229,7 +232,7 @@ export default {
   },
   watch:{
     $route(to, from) {
-    //  window.location.reload()
+     window.location.reload()
     },
     'dataSource.invoice_no'(newval){
       this.dataSource.invoice_ref = `${this.dataSource.client_id}_${newval}`
@@ -328,6 +331,7 @@ export default {
       }
     },
     printInvoice: function() {
+      this.updateInvoice();
       window.print();
     },
   },
