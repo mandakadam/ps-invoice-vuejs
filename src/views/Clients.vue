@@ -113,16 +113,21 @@ export default {
     },
     computed: {
        filteredList() {
-            return this.dataSource.filter(a => {
-                return a.name.toLowerCase().includes(this.search.toLowerCase())
-            })
+           if(this.dataSource.length){
+                return this.dataSource.filter(a => {
+                    return a.name.toLowerCase().includes(this.search.toLowerCase())
+                })
+           }
+           else{
+               return []
+           }
         }
     },
     methods:{
         fetchData(){
              this.$store.commit("loading", true);
 
-             this.$http.post('/api/clients/read')
+             this.$http.post('/api/clients/read', {})
             .then((res) => {
                 this.dataSource = res.data
                 this.$store.commit("loading", false);

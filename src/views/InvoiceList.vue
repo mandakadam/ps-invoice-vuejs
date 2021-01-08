@@ -48,10 +48,15 @@ export default {
     },
     computed: {
        filteredList() {
-            return this.dataSource.filter(a => {
-                console.log(a)
-                return a.invoice_no.toString().toLowerCase().includes(this.search.toLowerCase())
-            })
+           if(this.dataSource.length){
+                return this.dataSource.filter(a => {
+                    console.log(a)
+                    return a.invoice_no.toString().toLowerCase().includes(this.search.toLowerCase())
+                })
+           }
+           else{
+               return []
+           }
         }
     },
     watch:{

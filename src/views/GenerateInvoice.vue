@@ -249,7 +249,7 @@ export default {
       }
     },
     fetchData() {
-      const today = new Date();
+      const today = this.dataSource.invoice_date || new Date();
       this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
 
       this.$store.commit("loading", true);
@@ -265,6 +265,7 @@ export default {
         });
     },
     modifyRead() {
+     
       this.$store.commit("loading", true);
 
       this.$http
@@ -272,6 +273,10 @@ export default {
         .then((res) => {
             this.$store.commit("loading", false);
             this.dataSource = res.data;
+
+            const today =  new Date(this.dataSource.invoice_date);
+            this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+
         })
         .catch((error) => {
             this.showError(error);
