@@ -1,0 +1,369 @@
+<template>
+  <form @submit="handleSubmit ">
+    <div class="container no-print">
+    <div class="d-flex justify-content-between ">
+        <h3>Invoice</h3>
+        <div>
+          <button v-if="$route.params.invoice_ref" class="btn btn-outline-secondary btn-sm" @click="$router.go(-2)"><b-icon-arrow-left /> Back</button>
+          <button v-else class="btn btn-outline-secondary btn-sm" @click="$router.go(-2)"><b-icon-arrow-left /> Back</button>
+        </div>
+    </div>
+    </div>
+
+  <div class="invoice-box">
+      <!-- {{dataSource}} -->
+    <table width="100%">
+      <tr>
+        <td width="120" align="center">
+          <img id="image" src="@/assets/img/logo1.jpg" alt="logo" width="100" />
+        </td>
+        <td width="290" valign="top">
+          <h4 style="color:#3F51B5 !important">Ponmariappan Soundrapandian</h4>
+          <p>
+            <b>Address:</b> 64.2/4, Amir Baug, Near Noorani Masjid, Punjabi
+            Colony, Chembur (W), Mumbai 400 089.
+          </p>
+
+          <p>
+            <b>Email:</b> Ponmariappan1@gmail.com<br />
+            <b>Tel:</b> 9619801438<br />
+          </p>
+        </td>
+        <td width="2%">&nbsp;</td>
+        <td valign="top" class="page-wrap">
+          <h2 class="page-head">Invoice</h2>
+          <table class="tbl" width="100%">
+            <tr>
+              <td width="40%" class="meta-head">Invoice #</td>
+              <td><input required class="input" type="number" name="" v-model="dataSource.invoice_no" /></td>
+            </tr>
+            <tr>
+              <td class="meta-head">Date</td>
+              <td><input required class="input" type="date" value="" v-model="dataSource.invoice_date"  /></td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <div style="padding:5px 10px; border: solid 1px #f44336; margin-top:10px">
+      <table width="100%">
+        <tr>
+          <td width="60%" valign="top">
+            <div>
+              <b>Bill To: </b>
+              <span id="name" style="color: #f44336 !important;">{{
+                dataSource.name
+              }}</span>
+            </div>
+            <div v-if="dataSource.contact">
+              <b>Contact: </b>
+              <span>{{ dataSource.contact }}</span>
+            </div>
+            <div v-if="dataSource.address">
+              <b>Address: </b>
+              <span>{{ dataSource.address }}</span>
+            </div>
+
+            <div v-if="dataSource.gst">
+              <b>GST Number: {{ dataSource.gst }} </b>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <table cellpadding="0" cellspacing="0" class="tbl">
+      <tr>
+        <th style="text-align:left">Item</th>
+        <th style="text-align:right">Unit Cost</th>
+        <th style="text-align:right">Quantity</th>
+        <th style="text-align:right">Price</th>
+      </tr>
+
+      <tr v-for="(item, index) in dataSource.items" :key="index">
+        <td width="50%">
+            <div style="display:flex">
+                <div>
+                    <button
+                        class="button  no-print"
+                        @click="deleteRow(item)"
+                        title="Remove row"
+                    >
+                        X
+                    </button>
+                </div>
+            <textarea class="input" cols="30" rows="1" v-model="item.description"></textarea>
+            </div>
+        </td>
+        <td style="text-align:right">
+          <input
+            style="text-align:right"
+            class="input"
+            type="text"
+            v-model="item.price"
+          />
+        </td>
+        <td style="text-align:right">
+          <input
+            style="text-align:right"
+            class="input"
+            type="text"
+            v-model="item.quantity"
+          />
+        </td>
+        <td style="text-align:right" width="20%">
+          {{ (item.price * item.quantity) | currency }}
+        </td>
+      </tr>
+
+      <tr class="no-print">
+        <td colspan="4">
+          <button type="button" class="button btn-add-row" @click="addRow">Add row</button>
+        </td>
+      </tr>
+    </table>
+
+    <table cellpadding="0" cellspacing="0" class="tbl">
+      <tr class="total">
+        <td class="total-value">
+          <b
+            >Rs. <span>{{ total | currency }}</span></b
+          >
+          <div class="inWords" name="">{{ total | toWords }} Only</div>
+        </td>
+      </tr>
+    </table>
+
+    <h4 class="page-head">Payment Information</h4>
+    <table width="100%">
+      <tr>
+        <td width="50%">
+          <p style="line-height: 20px;">
+            <b>Name:</b> Ponmariappan Soundrapandian<br />
+            <b>AC No:</b> 006310310000380<br />
+            <b>IFSC CODE:</b> BKID0000009<br />
+            <b>Bank:</b> Bank Of India<br />
+            <b>Branch:</b> CHEMBUR<br />
+            <b>Pan No:</b> BTTPS7819A
+          </p>
+        </td>
+
+        <td style=" text-align:right">
+          <br />
+          <div style="position:relative;" v-if="showSign">
+            <button
+              class="button no-print"
+              @click="showSign = false"
+              title="Remove Sign"
+            >
+              X
+            </button>
+            <div>Thank you!</div>
+            <div class="sign_wrp">
+              <a href="javascript:void(0);" rel="nofollow"
+                ><img width="150" src="@/assets/img/sign.jpg"
+              /></a>
+            </div>
+            <div>Ponmariappan Soundrapandian</div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  
+    <div v-if="scope=='create'">
+        <button type="submit" class="button no-print">Create Invoice</button>
+        <button class="button no-print" @click="$router.go(-1)">Close</button>
+    </div>
+    <div v-else>
+      <button class="button no-print" @click="printInvoice">Print Invoice</button>
+      <button type="submit" class="button no-print" >Update Invoice</button>
+      <button class="button no-print" @click="$router.go(-2)">Close</button>
+    </div>
+  </div>
+  </form>
+</template>
+<script>
+var converter = require("number-to-words");
+import "@/assets/css/invoice.scss";
+
+export default {
+  data() {
+    return {
+      dataSource: {
+          invoice_date: new Date(),
+          status: 0,
+          items: [{ description: "Image Retouching", quantity: 1, price: 300 }],
+          scope:"create"
+      },
+      showSign: true,
+    };
+  },
+  created() {
+    console.log(this.$route.params)
+
+    if(this.$route.params.invoice_ref){
+      this.modifyRead()
+      this.scope = "modify"
+    }
+    else{
+        this.fetchData();
+         this.scope = "create"
+    }
+
+  },
+  computed: {
+    total() {
+     const _total = this.dataSource.items.reduce(
+        (acc, item) => acc + item.price * item.quantity,
+        0
+      );
+      this.dataSource.total = _total
+      return _total
+    },
+  },
+  filters: {
+    currency(value) {
+      if (!value) return "";
+      return value.toFixed(2);
+    },
+    toWords(value) {
+      if (!value) return "";
+      return converter.toWords(value);
+    },
+  },
+  watch:{
+    $route(to, from) {
+    //  window.location.reload()
+    },
+    'dataSource.invoice_no'(newval){
+      this.dataSource.invoice_ref = `${this.dataSource.client_id}_${newval}`
+    }
+  },
+  methods: {
+    /*getInvoiceNumber() {
+      this.$http
+        .post(`/api/client_details/read`,
+        {
+            "filters": {"client_id": this.$route.params.id}
+        }, 
+        {
+          headers: { "auth-token": sessionStorage.getItem("sessionid") },
+        })
+        .then((res) => {
+            this.dataSource.invoice_ref = res.data.length + 1;
+        });
+    },*/
+    handleSubmit(event) {
+      event.preventDefault();
+      if(this.scope == "create"){
+          this.createInvoice()
+      }
+      else{
+        this.updateInvoice()
+      }
+    },
+    fetchData() {
+      const today = new Date();
+      this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
+
+
+      this.$http
+        .post(`/api/clients/read/${this.$route.params.id}`, {}, {
+          headers: { "auth-token": sessionStorage.getItem("sessionid") },
+        })
+        .then((res) => {
+          this.dataSource = {...this.dataSource, ...res.data};
+        });
+    },
+    modifyRead() {
+      this.$http
+        .post(`/api/client_details/read/${this.$route.params.invoice_ref}`, {},
+        {
+          headers: { "auth-token": sessionStorage.getItem("sessionid") },
+        })
+        .then((res) => {
+          this.dataSource = res.data;
+        });
+    },
+    createInvoice(){
+      console.log(this.dataSource)
+        for(var i in this.dataSource){
+            delete this.dataSource['_id']
+            delete this.dataSource['__v']
+        }
+            
+        this.$http
+        .post(`/api/client_details/create`, 
+        this.dataSource,
+        {
+          headers: { "auth-token": sessionStorage.getItem("sessionid") },
+        })
+        .then((res) => {
+            this.$bvToast.toast(res.data.msg, {
+                title: "Success",
+                variant: "success",
+                solid: true
+            })
+            this.scope = "modify"
+            this.$bvModal.msgBoxOk('Action completed')
+              .then(value => {
+                if(value){
+                    this.$router.push(`/generate_invoice/${this.$route.params.id}/${this.dataSource.invoice_ref}`);
+                }
+              })
+              .catch(err => {
+                // An error occurred
+              })
+
+        })
+        .catch((error) => {
+          console.log(error.response)
+            this.$bvToast.toast(error.response.data.msg, {
+                title: "Error",
+                variant: "danger",
+                solid: true
+            })
+        });
+    },
+    updateInvoice(){
+        this.$http
+        .put(`/api/client_details/update/${this.$route.params.invoice_ref}`, 
+        this.dataSource,
+        {
+          headers: { "auth-token": sessionStorage.getItem("sessionid") },
+        })
+        .then((res) => {
+           this.$bvToast.toast(res.data.msg, {
+                title: "Success",
+                variant: "success",
+                solid: true
+            });
+        })
+        .catch((error) => {
+            this.$bvToast.toast(error.response.data.msg, {
+                title: "Error",
+                variant: "danger",
+                solid: true
+            })
+        });
+    },
+    addRow() {
+      this.dataSource.items.push({
+        description: "Image Retouching",
+        quantity: 1,
+        price: 0,
+      });
+    },
+    deleteRow(i) {
+      const index = this.dataSource.items.indexOf(i);
+      if (index > -1) {
+        this.dataSource.items.splice(index, 1);
+      }
+    },
+    printInvoice: function() {
+      window.print();
+    },
+  },
+};
+</script>

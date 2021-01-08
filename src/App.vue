@@ -1,28 +1,50 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <b-navbar toggleable="sm"  type="dark" variant="dark" sticky class="mb-3">
+        <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
+
+        <b-navbar-brand>Ponmariappan</b-navbar-brand>
+
+        <b-collapse id="nav-text-collapse" is-nav  v-if="authenticated">
+        <b-navbar-nav  class="ml-auto">
+            <b-nav-item to="/invoice_list">All Invoice</b-nav-item>
+            <b-nav-item to="/clients">Clients</b-nav-item>
+            <b-nav-text><router-link to="/login" v-on:click.native="logout()" replace>Logout</router-link></b-nav-text>
+        </b-navbar-nav>
+        </b-collapse>
+    </b-navbar>
+
+        <router-view @authenticated="setAuthenticated" />
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+        data() {
+            return {
+                authenticated: false
+            }
+        },
+        watch:{
+           
+        },
+        mounted() {
+            if(!sessionStorage.getItem('sessionid')) {
+                this.authenticated = false
+                this.$router.replace({ name: "login" });
+            }else{
+               this.authenticated = true
+            }
+        },
+        methods: {
+            setAuthenticated(status) {
+                this.authenticated = status;
+            },
+            logout() {
+                this.authenticated = false;
+                sessionStorage.removeItem('sessionid')
+            }
+        }
+    }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
