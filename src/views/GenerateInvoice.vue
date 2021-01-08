@@ -270,7 +270,7 @@ export default {
       this.$http
         .post(`/api/client_details/read/${this.$route.params.invoice_ref}`)
         .then((res) => {
-            this.showSuccess("Invoice data loaded successfully");
+            this.$store.commit("loading", false);
             this.dataSource = res.data;
         })
         .catch((error) => {
