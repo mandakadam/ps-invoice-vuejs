@@ -3,7 +3,7 @@
         <b-navbar toggleable="sm"  type="dark" variant="dark" sticky class="mb-3">
         <b-navbar-toggle target="nav-text-collapse"></b-navbar-toggle>
 
-        <b-navbar-brand to="/">Ponmariappan</b-navbar-brand>
+        <b-navbar-brand to="#">Ponmariappan</b-navbar-brand>
 
         <b-collapse id="nav-text-collapse" is-nav  v-if="authenticated">
         <b-navbar-nav  class="ml-auto">

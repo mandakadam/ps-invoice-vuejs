@@ -170,13 +170,15 @@
       </tr>
     </table>
   
-    <div class="d-flex no-print">
+    <div class="no-print">
+        <div class="d-flex">
         <button v-if="scope=='create'" type="submit" class="btn btn-primary mr-3">Create Invoice</button>
         <div v-else>
         <button type="submit" class="btn btn-success mr-3">Update Invoice</button>
         <button class="btn btn-primary mr-3" @click="printInvoice">Print Invoice</button>
         </div>
         <router-link class="btn btn-outline-danger  mr-3" to="/clients">Close</router-link>
+        </div>
     </div>
   </div>
   </form>

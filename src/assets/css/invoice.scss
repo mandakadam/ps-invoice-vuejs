@@ -16,7 +16,7 @@
 .tbl tr.item-row td {vertical-align: middle;}
 .tbl td.total-line {background-color: #f7f7f7 !important; text-align: right; -webkit-print-color-adjust: exact;}
 .tbl td.total-value { background-color: #f7f7f7 !important; padding: 10px; white-space: nowrap;-webkit-print-color-adjust: exact; text-align: right; line-height: 18px;}
-.tbl .inWords {font-size: 11px; text-transform: capitalize;}
+.tbl .inWords {font-size: 12px; text-transform: capitalize; color: #000; font-weight: bold;}
 .tbl td.balance { background-color: #eee !important; -webkit-print-color-adjust: exact;}
 .tbl td.inWords { border-left: 0; }
 .tbl td.inWords input{border:0; width: 100%; background: transparent;}
