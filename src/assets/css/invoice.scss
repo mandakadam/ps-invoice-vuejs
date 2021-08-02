@@ -1,11 +1,11 @@
 
 .button{padding: 5px 10px; cursor: pointer;}
 
-.input{padding: 5px;    width: 100%; border:solid 1px #ccc}
+.input{padding: 5px;    width: 100%; border:solid 1px #ccc; color: #000;}
 .page-head { margin: 10px 0;     background-color: #391f69 !important; color:#fff !important; -webkit-print-color-adjust: exact; text-align: center; font: bold 15px Helvetica, Sans-Serif; text-decoration: uppercase; letter-spacing: 20px; padding: 8px 0px; }
 
 
-.tbl{ border: 1px solid #bdbdbd; font-size: 14px; margin: 10px 0;}
+.tbl{ border: 1px solid #bdbdbd; font-size: 14px; margin: 10px 0; color: #000;}
 .tbl th { border: 1px solid #dedede; padding: 3px 10px; }
 .tbl td { border: 1px solid #dedede; padding: 3px 10px; }
 .tbl { clear: both; width: 100%; }
@@ -25,7 +25,7 @@
 .tbl .costWrp td{padding: 0; border:0;}
 
 .invoice-box {
-    max-width: 800px;
+    max-width: 1200px;
     padding: 30px;
     margin: 30px auto;
     border: 1px solid #eee;

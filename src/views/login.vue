@@ -60,7 +60,10 @@ export default {
               this.$emit("authenticated", true);
 
               this.showSuccess("Logged in successfully");
-              self.$router.replace({ name: "clients"});
+              this.$nextTick(()=>{
+                this.$router.push({ path: `/clients` })
+              })
+              // self.$router.replace({ name: "clients"});
             }
         }).catch((error) => {
           this.showError(error);

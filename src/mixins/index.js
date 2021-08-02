@@ -15,7 +15,7 @@ export const Globalmixin = {
         showError(error){
             this.$store.commit("loading", false);
             if(error){
-                const msg = (error && error.response && error.response.data && error.response.data.msg) ? error.response.data.msg : res
+                const msg = (error && error.response && error.response.data && error.response.data.msg) ? error.response.data.msg : error
                 return this.$bvToast.toast(msg, {
                     title: "Error",
                     variant: "danger",

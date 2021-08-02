@@ -17,15 +17,14 @@
           <img id="image" src="@/assets/img/logo1.jpg" alt="logo" width="100" />
         </td>
         <td width="290" valign="top">
-          <h4 style="color:#3F51B5 !important">Ponmariappan Soundrapandian</h4>
+          <h4 style="color:#3F51B5 !important; font-size:17px">Ponmariappan Soundrapandian</h4>
           <p>
-            <b>Address:</b> 64.2/4, Amir Baug, Near Noorani Masjid, Punjabi
-            Colony, Chembur (W), Mumbai 400 089.
+            <b>Address:</b> Flat No. 302, Plot No. 67,<br /> Hari Om Residency, Taj Road, <br />Seawoods, Navi Mumbai - 400706.
           </p>
 
           <p>
-            <b>Email:</b> Ponmariappan1@gmail.com<br />
-            <b>Tel:</b> 9619801438<br />
+            <b>Email:</b> ponmariappan1@gmail.com<br />
+            <b>Mob:</b> 9619801438<br />
           </p>
         </td>
         <td width="2%">&nbsp;</td>
@@ -81,7 +80,7 @@
       </tr>
 
       <tr v-for="(item, index) in dataSource.items" :key="index">
-        <td width="50%">
+        <td width="40%">
             <div style="display:flex">
                 <div>
                     <button
@@ -112,7 +111,7 @@
           />
         </td>
         <td style="text-align:right" width="20%">
-          {{ (item.price * item.quantity) | currency }}
+          <b>{{ (item.price * item.quantity) | currency }}</b>
         </td>
       </tr>
 
