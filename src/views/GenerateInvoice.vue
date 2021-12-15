@@ -10,7 +10,7 @@
     </div>
 
   <div class="invoice-box">
-      {{dataSource}}
+      <!-- {{dataSource}} -->
     <table width="100%">
       <tr>
         <td width="120" align="center">
@@ -256,7 +256,7 @@ export default {
     fetchClientData(){
              this.$store.commit("loading", true);
 
-             this.$http.post(`/api/clients/read/${this.$route.params.id}`)
+             return this.$http.post(`/api/clients/read/${this.$route.params.id}`)
             .then((res) => {
               this.$store.commit("loading", false);
               this.dataSource = {...this.dataSource, ...res.data};
@@ -289,7 +289,7 @@ export default {
         .post(`/api/client_details/read/${this.$route.params.invoice_ref}`)
         .then((res) => {
             this.$store.commit("loading", false);
-            this.dataSource = res.data;
+             this.dataSource = {...this.dataSource, ...res.data};
 
             const today =  new Date(this.dataSource.invoice_date);
             this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]
