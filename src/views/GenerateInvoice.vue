@@ -10,7 +10,7 @@
     </div>
 
   <div class="invoice-box">
-      <!-- {{dataSource}} -->
+      {{dataSource}}
     <table width="100%">
       <tr>
         <td width="120" align="center">
@@ -65,6 +65,9 @@
 
             <div v-if="dataSource.gst">
               <b>GST Number: {{ dataSource.gst }} </b>
+            </div>
+            <div v-if="dataSource.pan">
+              <b>PAN Number: {{ dataSource.pan }} </b>
             </div>
           </td>
         </tr>
@@ -200,6 +203,7 @@ export default {
   },
   created() {
     console.log(this.$route.params)
+    this.fetchClientData()
 
     if(this.$route.params.invoice_ref){
       this.modifyRead()
@@ -249,6 +253,18 @@ export default {
         this.updateInvoice()
       }
     },
+    fetchClientData(){
+             this.$store.commit("loading", true);
+
+             this.$http.post(`/api/clients/read/${this.$route.params.id}`)
+            .then((res) => {
+              this.$store.commit("loading", false);
+              this.dataSource = {...this.dataSource, ...res.data};
+            })
+             .catch((error) => {
+                this.showError(error);
+            });
+        },
     fetchData() {
       const today = this.dataSource.invoice_date || new Date();
       this.dataSource.invoice_date = new Date(today.getTime()-(today.getTimezoneOffset()*60*1000)).toISOString().split('T')[0]

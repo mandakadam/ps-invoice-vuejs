@@ -58,6 +58,9 @@
             <b-form-group label="GST" >
                 <b-form-input v-model="form.gst"></b-form-input>
             </b-form-group>
+            <b-form-group label="PAN" >
+                <b-form-input v-model="form.pan"></b-form-input>
+            </b-form-group>
             <b-form-group label="Contact" >
                 <b-form-input 
                 v-model="form.contact"
