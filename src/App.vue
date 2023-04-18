@@ -45,12 +45,12 @@ import { mapState } from "vuex";
             ...mapState(["isLoading", "refCount"]),
         },
         mounted() {
-            if(!sessionStorage.getItem('sessionid')) {
-                this.authenticated = false
-                this.$router.replace({ name: "login" });
-            }else{
-               this.authenticated = true
-            }
+            // if(!sessionStorage.getItem('sessionid')) {
+            //     this.authenticated = false
+            //     this.$router.replace({ name: "login" });
+            // }else{
+            //    this.authenticated = true
+            // }
         },
         methods: {
             setAuthenticated(status) {
